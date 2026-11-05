@@ -252,7 +252,7 @@ function Write-Log {
 #region Runbook Execution
 
 if (Test-IsRunbookInvokedFromAutomation) {
-    if (-not ($RunbookConcurrencyCheck -and Test-RunbookExecution `
+    if ($RunbookConcurrencyCheck -and -not (Test-RunbookExecution `
                 $RunbookContext["RunbookName"] `
                 $RunbookContext["ResourceGroupName"] `
                 $RunbookContext["AutomationAccountName"] `
