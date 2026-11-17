@@ -24,6 +24,10 @@ $VerbosePreference = "Continue"
 
 # Set to false to disable runbook concurrency check
 $RunbookConcurrencyCheck = $true
+# Write log messages to the output stream
+$LogOutputStream = $true
+# Write log messages to the various message streams (Verbose, Warning, Error)
+$LogMessageStreams = $true
 
 #endregion
 
@@ -244,7 +248,17 @@ function Write-Log {
     )
     $ts = (Get-Date).ToUniversalTime().ToString("o")
     $jobId = Get-RunbookJobId
-    Write-Output ("[{0}] [{1}] [job:{2}] {3}" -f $ts, $Level, $jobId, $Message)
+    $msg = "[{0}] [{1}] [job:{2}] {3}" -f $ts, $Level, $jobId, $Message
+
+    if ($LogOutputStream) { Write-Output $msg }
+
+    if ($LogMessageStreams) {
+        switch ($Level) {
+            "INFO" { Write-Verbose $msg }
+            "WARN" { Write-Warning $msg }
+            "ERROR" { Write-Error $msg }
+        }
+    }
 }
 
 #endregion
